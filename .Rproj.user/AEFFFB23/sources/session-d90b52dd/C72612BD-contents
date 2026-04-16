@@ -1,0 +1,15 @@
+The dataset was first loaded and explored to understand its structure, variable types, and overall quality. Initial inspection using summary statistics and structure functions revealed the presence of missing values and areas requiring standardization.
+
+Missing values were identified in several variables, specifically Ancillary Revenue, Catering Cost, and Handling Cost. These values were replaced using the median of each respective variable. The median was chosen instead of the mean because financial data often contains extreme values, and the median provides a more robust estimate that is less affected by outliers.
+
+Categorical variables such as Season, Route Category, and Demand Level were reviewed for consistency. Although no major inconsistencies were found, all values were converted to lowercase to ensure uniform formatting and avoid potential issues during analysis.
+
+Further validation checks were performed to ensure the dataset was logically consistent. It was confirmed that the number of passengers did not exceed aircraft capacity for any observation. Additionally, load factor values were verified against the ratio of passengers to aircraft capacity, and no inconsistencies were found.
+
+During validation, discrepancies were identified in the Profit variable. A significant number of observations did not match the expected calculation of profit as total revenue minus total cost. To correct this, the profit variable was recalculated using the formula:
+
+Profit = Total Revenue − Total Cost
+
+This ensured that all profit values were accurate and consistent with the underlying financial data.
+
+Finally, the dataset was checked for duplicate records, and none were found. After completing these steps, the dataset was fully cleaned and prepared for analysis.

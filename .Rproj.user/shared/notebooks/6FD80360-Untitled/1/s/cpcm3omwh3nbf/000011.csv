@@ -1,0 +1,5 @@
+"0",""
+"0","# Average profit by route category"
+"0","airline_clean %>%"
+"0","  group_by(Route_Category) %>%"
+"0","  summarize(avg_profit = mean(Profit))"

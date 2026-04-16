@@ -1,0 +1,2 @@
+"0","ggplot(airline_clean, aes(x = Load_Factor, y = Profit)) +"
+"0","  geom_point(alpha = 1/3)"
