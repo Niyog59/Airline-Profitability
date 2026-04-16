@@ -1,0 +1,96 @@
+---
+title: "Airline Route Profitability"
+output: html_document
+date: "2026-04-16"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+```
+
+```{r}
+#Loading Data
+airline_data <- read_csv("airline_route_profitability.csv")
+glimpse(airline_data)
+```
+
+```{r}
+head(airline_data)
+```
+
+```{r}
+#Missing value check
+colSums(is.na(airline_data))
+airline_clean <- na.omit(airline_data)
+
+```
+```{r}
+glimpse(airline_clean)
+```
+
+```{r}
+#Average profit by season
+airline_clean %>%
+  group_by(Season) %>%
+  summarize(avg_profit = mean(Profit))
+# Low - slowest travel period
+#Normal - regular travel period
+#Peak - Not super busy, not super quiet, more than Normal.
+#Shoulder - busiest travel period
+```
+
+```{r}
+# Average profit by route category
+airline_clean %>%
+  group_by(Route_Category) %>%
+  summarize(avg_profit = mean(Profit))
+
+#Short Haul = 1 to 3.5 hours
+#Medium Haul = 2.5 to 7 hours
+#Long Haul = 6.5 to 16.5 hours
+```
+
+
+```{r}
+#Average profit by demand level
+airline_clean %>%
+  group_by(Demand_Level) %>%
+  summarize(avg_profit = mean(Profit))
+```
+
+```{r}
+#Flight count by season
+ggplot(data = airline_clean, aes(x = Season)) +
+  geom_bar()
+
+```
+Low - slowest travel period
+Normal - regular travel period
+Peak - Not super busy, not super quiet, more than Normal.
+Shoulder - busiest travel period
+
+```{r}
+#How profit spreads out across flights?
+
+ggplot(airline_clean, aes(x = Profit)) +
+  geom_histogram(binwidth = 50000)
+```
+x-axis values are in dollars. 0e+00 = $0, 5e+05 = $500,000, 1e+06 = $1,000
+
+```{r}
+#Profit by Route Category
+ggplot(airline_clean, aes(x = Route_Category, y = Profit)) +
+  geom_boxplot()
+```
+
+```{r}
+#Load Factor VS Profit
+ggplot(airline_clean, aes(x = Load_Factor, y = Profit)) +
+  geom_point(alpha = 1/3)
+#Load_Factor = Passengers/Aircraft Capacity
+```
+
