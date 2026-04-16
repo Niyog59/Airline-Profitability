@@ -1,2 +1,0 @@
-"0","ggplot(airline_clean, aes(x = Route_Category, y = Profit)) +"
-"0","  geom_boxplot()"

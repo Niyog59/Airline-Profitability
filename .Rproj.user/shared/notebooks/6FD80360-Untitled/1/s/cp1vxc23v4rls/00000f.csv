@@ -1,2 +1,0 @@
-"0","ggplot(airline_clean, aes(x = Profit)) +"
-"0","  geom_histogram(binwidth = 50000)"

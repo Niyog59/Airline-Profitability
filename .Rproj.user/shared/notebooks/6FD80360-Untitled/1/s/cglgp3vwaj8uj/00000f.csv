@@ -1,2 +1,0 @@
-"0","ggplot(data = airline_clean, aes(x = Season)) +"
-"0","  geom_bar()"

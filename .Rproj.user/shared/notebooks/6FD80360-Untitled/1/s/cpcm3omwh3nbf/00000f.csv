@@ -1,4 +1,0 @@
-"0","#Average profit by season"
-"0","airline_clean %>%"
-"0","  group_by(Season) %>%"
-"0","  summarize(avg_profit = mean(Profit))"
