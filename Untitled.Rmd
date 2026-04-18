@@ -76,10 +76,13 @@ ggplot(data = airline_clean, aes(x = Season)) +
   )
 
 ```
-Low - slowest travel period
-Normal - regular travel period
-Peak - Not super busy, not super quiet, more than Normal.
-Shoulder - busiest travel period
+Low: Slowest travel period with the lowest demand. Flights are usually cheaper and less crowded.
+
+Normal: Average travel demand. Not busy or quiet, with standard pricing.
+
+Peak: Busiest travel period with the highest demand. Flights are more expensive and airports are crowded.
+
+Shoulder: Transition period between peak and low seasons. Demand and prices are moderate, with fewer crowds than peak times.
 
 ```{r}
 #How profit spreads out across flights?
@@ -117,3 +120,65 @@ ggplot(airline_clean, aes(x = Load_Factor, y = Profit)) +
 #Load_Factor = Passengers/Aircraft Capacity
 ```
 
+```{r}
+#Do flights generate more profit during Peak season compared to Low or Shoulder seasons?
+ggplot(airline_clean, aes(x = Season, y = Profit)) +
+  geom_boxplot() +
+  labs(title = "Profit by Season")
+```
+
+```{r}
+#Are long-haul routes more profitable than short-haul routes?
+airline_clean %>%
+  group_by(Route_Category) %>%
+  summarize(avg_profit = mean(Profit))
+```
+
+```{r}
+#How does demand level influence airline profitability?
+# Average profit by demand level
+airline_clean %>%
+  group_by(Demand_Level) %>%
+  summarize(
+    flight_count = n(),
+    avg_profit = mean(Profit, na.rm = TRUE),
+    median_profit = median(Profit, na.rm = TRUE),
+    min_profit = min(Profit, na.rm = TRUE),
+    max_profit = max(Profit, na.rm = TRUE)
+  )
+
+ggplot(airline_clean, aes(x = Demand_Level, y = Profit)) +
+  geom_boxplot() +
+  labs(
+    title = "Profit by Demand Level",
+    x = "Demand Level",
+    y = "Profit (USD)"
+  )
+```
+
+```{r}
+#Do fuller flights (higher load factor) lead to higher profit?
+ggplot(airline_clean, aes(x = Load_Factor, y = Profit)) +
+  geom_point(alpha = 0.3) +
+  geom_smooth(method = "lm")
+```
+
+```{r}
+#Is profit more influenced by season or by demand level?
+# by season
+airline_clean %>%
+  group_by(Season) %>%
+  summarize(avg_profit = mean(Profit))
+
+# by demand
+airline_clean %>%
+  group_by(Demand_Level) %>%
+  summarize(avg_profit = mean(Profit))
+```
+
+```{r}
+#Which combinations of season and route category produce the highest profit?
+airline_clean %>%
+  group_by(Season, Route_Category) %>%
+  summarize(avg_profit = mean(Profit))
+```
