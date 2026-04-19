@@ -7,10 +7,14 @@ date: "2026-04-16"
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
+The dataset used in this project is the "Airline Route Profitability Dataset" 
+from Kaggle, available at: https://www.kaggle.com/datasets/waleedfaheem/airline-route-profitability-and-cost-analysis?resource=download
+Author: Muhammad Waleed 
 ```{r}
 library(tidyverse)
 library(tidyr)
+library(lubridate)
+library(patchwork)
 ```
 
 ```{r}
@@ -24,11 +28,21 @@ head(airline_data)
 ```
 
 ```{r}
-#Missing value check
+# Check missing values before
 colSums(is.na(airline_data))
+
+# Replace NAs in numeric columns with the median
 airline_clean <- airline_data %>%
   mutate(across(where(is.numeric),
-                ~ifelse(is.na(.), median(., na.rm = TRUE), .)))
+                ~ ifelse(is.na(.), median(., na.rm = TRUE), .)))
+
+# Replace NAs in text columns with "Unknown"
+airline_clean <- airline_clean %>%
+  mutate(across(where(is.character),
+                ~ ifelse(is.na(.), "Unknown", .)))
+
+# Check missing values after
+colSums(is.na(airline_clean))
 
 ```
 ```{r}
@@ -40,10 +54,10 @@ glimpse(airline_clean)
 airline_clean %>%
   group_by(Season) %>%
   summarize(avg_profit = mean(Profit, na.rm = TRUE))
-# Low - slowest travel period
-#Normal - regular travel period
-#Peak - Not super busy, not super quiet, more than Normal.
-#Shoulder - busiest travel period
+#Peak = busiest (summer/holidays)
+#Shoulder = in between peak and low
+#Normal = regular
+#Low = slowest
 ```
 
 ```{r}
@@ -66,23 +80,49 @@ airline_clean %>%
 ```
 
 ```{r}
-#Flight count by season
-ggplot(data = airline_clean, aes(x = Season)) +
-  geom_bar() +
+# Convert Flight_Date to a proper date
+airline_clean <- airline_clean %>%
+  mutate(Flight_Date = ymd(Flight_Date))
+
+# Calculate normalized counts
+season_counts <- airline_clean %>%
+  group_by(Season) %>%
+  summarize(
+    total_flights = n(),
+    days_in_season = n_distinct(Flight_Date)
+  ) %>%
+  mutate(flights_per_day = total_flights / days_in_season)
+
+# Chart 1: Raw counts (misleading)
+plot_raw <- ggplot(airline_clean, aes(x = Season)) +
+  geom_bar(fill = "tomato") +
   labs(
-    title = "Number of Flight Observations by Season",
+    title = "Before: Raw Flight Counts",
+    subtitle = "Looks like Peak has way more flights",
     x = "Season",
     y = "Number of Flights"
   )
 
+# Chart 2: Normalized (fair comparison)
+plot_normalized <- ggplot(season_counts, aes(x = Season, y = flights_per_day)) +
+  geom_col(fill = "steelblue") +
+  labs(
+    title = "After: Flights per Day",
+    subtitle = "Actually roughly equal across seasons",
+    x = "Season",
+    y = "Flights per Day"
+  )
+
+# Put them side by side
+plot_raw + plot_normalized
 ```
-Low: Slowest travel period with the lowest demand. Flights are usually cheaper and less crowded.
+Peak (June–August, late December): Busiest travel period with the highest demand. Covers summer vacation and winter holidays. Flights are more expensive and airports are crowded.
 
-Normal: Average travel demand. Not busy or quiet, with standard pricing.
+Shoulder (April–May, September–October): Transition period between peak and low seasons. Demand and prices are moderate, with fewer crowds than peak times.
 
-Peak: Busiest travel period with the highest demand. Flights are more expensive and airports are crowded.
+Normal (March, November): Average travel demand. Not busy or quiet, with standard pricing.
 
-Shoulder: Transition period between peak and low seasons. Demand and prices are moderate, with fewer crowds than peak times.
+Low (January–February): Slowest travel period with the lowest demand. Flights are usually cheaper and less crowded.
 
 ```{r}
 #How profit spreads out across flights?
