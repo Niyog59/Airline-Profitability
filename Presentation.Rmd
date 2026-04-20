@@ -124,8 +124,7 @@ ggplot(airline_clean, aes(x = Route_Category, y = Profit_Margin)) +
   theme_minimal()
 ```
 
-Once we divide by revenue, the gap becomes smaller. Long-haul earns **more dollars**, but is **not always proportionally more efficient**.
-
+**Long-haul routes appear to be the most efficient overall** because they have the highest typical profit margins. However, there is still overlap, so this is a general pattern, not a rule for every single flight.
 ---
 
 ## Does Season Affect Profit?
