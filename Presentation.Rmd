@@ -124,7 +124,8 @@ ggplot(airline_clean, aes(x = Route_Category, y = Profit_Margin)) +
   theme_minimal()
 ```
 
-**Long-haul routes appear to be the most efficient overall** because they have the highest typical profit margins. However, there is still overlap, so this is a general pattern, not a rule for every single flight.
+**Long-haul routes appear to be the most efficient overall** because they have the highest typical profit margins.
+
 ---
 
 ## Does Season Affect Profit?
